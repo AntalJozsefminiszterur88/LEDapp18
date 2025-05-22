@@ -1,0 +1,88 @@
+QMainWindow, QWidget {
+                background-color: rgb(50, 51, 57);
+                color: #E0E0E0;
+            }
+            QLabel { background-color: transparent; font-family: Arial; color: #E0E0E0; }
+            QLabel#titleLabel { font-size: 16pt; font-weight: bold; color: #FFFFFF; }
+            QLabel#statusLabel { font-size: 11pt; font-weight: bold; }
+            QLabel#positionStatusLabel { font-size: 10pt; font-weight: bold; } /* Szín itt törölve, dinamikusan lesz beállítva */
+            QPushButton {
+                font-family: Arial; font-size: 11pt; padding: 5px 10px;
+                min-height: 2em; min-width: 7em; border: 1px solid #777;
+                border-radius: 4px; background-color: #555; color: #FFFFFF;
+            }
+            QPushButton:hover { background-color: #666; }
+            QPushButton:pressed { background-color: #444; }
+            QPushButton:disabled { background-color: #404040; color: #888; border-color: #666; }
+            QPushButton#powerOffButton { background-color: #A03030; }
+            QPushButton#powerOffButton:hover { background-color: #B04040; }
+            QPushButton#powerOffButton:pressed { background-color: #902020; }
+            QPushButton#powerOnButton { background-color: #308030; }
+            QPushButton#powerOnButton:hover { background-color: #409040; }
+            QPushButton#powerOnButton:pressed { background-color: #207020; }
+            QListWidget {
+                font-family: Arial; font-size: 11pt; background-color: #444;
+                color: #E0E0E0; border: 1px solid #777;
+                selection-background-color: #0078D7; selection-color: white;
+            }
+            QProgressBar {
+                 border: 1px solid #777; border-radius: 5px; text-align: center;
+                 background-color: #444; height: 18px; color: #E0E0E0;
+            }
+             QProgressBar::chunk { background-color: #308030; border-radius: 4px; }
+             QComboBox {
+                 font-family: Arial; min-height: 1.8em; padding: 1px 5px 1px 3px;
+                 border: 1px solid #777; border-radius: 3px; background-color: #555;
+                 color: #E0E0E0; selection-background-color: #0078D7;
+             }
+             /* ----- JAVÍTOTT ComboBox Legördülő Stílus ----- */
+             QComboBox::drop-down {
+                 subcontrol-origin: padding;
+                 subcontrol-position: top right;
+                 width: 20px; /* Nyíl rész szélessége */
+                 border-left-width: 1px;
+                 border-left-color: #777; /* Szegély a gomb és a mező között */
+                 border-left-style: solid; /* dotted vagy dashed is lehet */
+                 border-top-right-radius: 3px; /* Lekerekítés igazítása */
+                 border-bottom-right-radius: 3px;
+                 background-color: #606060; /* Enyhén világosabb háttér a nyílnak */
+             }
+             QComboBox::down-arrow {
+                 /* image: url(resources/arrow.png); */ /* Opcionális egyedi kép */
+                 width: 12px; /* Nyíl mérete */
+                 height: 12px;
+                 /* A rendszer nyilát használja, ha nincs kép megadva */
+             }
+             /* QComboBox::down-arrow:on { } */ /* Opcionális: Stílus, ha a menü nyitva */
+             /* ----- ComboBox Stílus Vége ----- */
+             QComboBox QAbstractItemView {
+                 background-color: #555; border: 1px solid #777;
+                 selection-background-color: #0078D7; color: #E0E0E0;
+             }
+             QLineEdit {
+                 font-family: Arial; min-height: 1.8em; padding: 1px 3px;
+                 border: 1px solid #777; border-radius: 3px;
+                 background-color: #555; color: #E0E0E0;
+             }
+             QCheckBox { spacing: 5px; background-color: transparent;}
+             QCheckBox::indicator {
+                width: 15px; height: 15px; border: 1px solid #888;
+                border-radius: 3px; background-color: #444;
+             }
+             QCheckBox::indicator:checked { background-color: #308030; image: none; }
+             QGridLayout { spacing: 5px; }
+             QGroupBox {
+                 font-weight: bold;
+                 border: 1px solid #777;
+                 border-radius: 4px;
+                 margin-top: 10px; /* Hely a címnek */
+                 padding: 10px 5px 5px 5px; /* Belső térköz (fent több a cím miatt) */
+                 background-color: transparent; /* Vagy lehetne: #3A3B41; */
+             }
+             QGroupBox::title {
+                 subcontrol-origin: margin;
+                 subcontrol-position: top left;
+                 padding: 0 3px 0 3px;
+                 left: 10px; /* Behúzás balról */
+                 color: #E0E0E0;
+             }

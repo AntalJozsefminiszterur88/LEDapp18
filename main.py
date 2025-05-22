@@ -4,30 +4,34 @@ import sys
 import os
 import argparse
 import asyncio # Importálva
+import logging # Import the logging module
+
+# Configure basic logging
+logging.basicConfig(
+    level=logging.INFO, 
+    format='[%(levelname)s - %(module)s @ %(asctime)s]: %(message)s', 
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
 from PySide6.QtWidgets import QApplication
-from PySide6.QtGui import QIcon
+# from PySide6.QtGui import QIcon # QIcon will be imported via app_utils
 from PySide6.QtCore import QTimer, QMetaObject, Qt, Q_ARG
+from app_utils import load_app_icon # Import the new function
 
 # Importáljuk a szükséges modulokat
-try:
-    from gui.main_window_pyside import LEDApp_PySide
-    from core import config_manager
-    from core.reconnect_handler import log_event
-except ImportError as e:
-     def log_event(msg): print(f"[LOG - Dummy Main]: {msg}")
-     log_event(f"Kritikus hiba az importálás során a main.py-ban: {e}")
-     print(f"CRITICAL IMPORT ERROR in main.py: {e}", file=sys.stderr)
-     sys.exit(1)
+from gui.main_window_pyside import LEDApp_PySide
+from core import config_manager
+# (Old try-except for log_event and critical error handling removed as logging is now standard)
 
 
 async def attempt_auto_connect(app_instance):
     """ Megkísérli az automatikus csatlakozást a háttérben. """
     if not app_instance: return False
-    connected_successfully = False # Kezdeti érték
+    # Unused variable 'connected_successfully' removed.
 
     try:
         # *** Opcionális extra késleltetés az újraindítás után ***
-        log_event("Rövid várakozás az auto-connect előtt (Bluetooth inicializálás)...")
+        logging.info("Rövid várakozás az auto-connect előtt (Bluetooth inicializálás)...")
         await asyncio.sleep(2.0) # Adjunk 2 másodpercet (ez állítható)
         # ****************************************************
 
@@ -35,10 +39,10 @@ async def attempt_auto_connect(app_instance):
         last_name = config_manager.get_setting("last_device_name")
 
         if not last_addr or not last_name:
-            log_event("Automatikus csatlakozás kihagyva: Nincs mentett utolsó eszköz.")
+            logging.info("Automatikus csatlakozás kihagyva: Nincs mentett utolsó eszköz.")
             return False # Már itt visszatérünk
 
-        log_event(f"Automatikus csatlakozás megkísérlése: {last_name} ({last_addr})")
+        logging.info(f"Automatikus csatlakozás megkísérlése: {last_name} ({last_addr})")
         app_instance.selected_device = (last_name, last_addr)
         QMetaObject.invokeMethod(app_instance, "update_connection_status_gui", Qt.ConnectionType.QueuedConnection, Q_ARG(str, "connecting"))
 
@@ -56,8 +60,8 @@ async def attempt_auto_connect(app_instance):
         # A future objektummal itt nem csinálunk semmit.
 
         if not future:
-             log_event("Hiba: Nem sikerült elindítani az automatikus csatlakozási taskot.")
-             connected_successfully = False
+             logging.error("Hiba: Nem sikerült elindítani az automatikus csatlakozási taskot.")
+             # Unused variable 'connected_successfully' removed.
         # A connected_successfully értékét a signal handler (_handle_connect_results) fogja beállítani.
         # Itt nem tudjuk megvárni szinkron módon. A függvény visszatérhet,
         # mielőtt a kapcsolat ténylegesen létrejönne vagy meghiúsulna.
@@ -66,8 +70,8 @@ async def attempt_auto_connect(app_instance):
     except Exception as e:
          # Ez a blokk valószínűleg nem fog lefutni a wait_for eltávolítása miatt,
          # de biztonság kedvéért itt hagyjuk.
-         log_event(f"Váratlan hiba az attempt_auto_connect indításakor: {e}")
-         connected_successfully = False
+         logging.error(f"Váratlan hiba az attempt_auto_connect indításakor: {e}", exc_info=True)
+         # Unused variable 'connected_successfully' removed.
          # Hibajelzés küldése a fő szálra
          if hasattr(app_instance, '_handle_connect_error'):
              error_msg = f"Indítási hiba: {e}"
@@ -75,8 +79,8 @@ async def attempt_auto_connect(app_instance):
 
     finally:
          app_instance._initial_connection_attempted = True
-         # A connected_successfully itt már nem releváns, mert a háttérben dől el.
-         log_event(f"_initial_connection_attempted flag beállítva: True (Csatlakozás a háttérben fut/futott).")
+         # Unused variable 'connected_successfully' removed.
+         logging.info(f"_initial_connection_attempted flag beállítva: True (Csatlakozás a háttérben fut/futott).")
          # Az ablak betöltését a show_window_from_tray vagy a _handle_connect_results intézi.
 
     # A függvény visszatérési értéke itt már nem tükrözi a kapcsolat sikerességét,
@@ -94,23 +98,12 @@ if __name__ == "__main__":
     qt_app = QApplication(sys.argv)
 
     # --- Ikon Beállítása ---
-    # ... (ikon betöltési logika változatlan) ...
-    icon_path = "led_icon.ico"
-    app_icon = QIcon()
-    if os.path.exists(icon_path):
-        app_icon = QIcon(icon_path)
-    elif getattr(sys, 'frozen', False):
-        base_path = os.path.dirname(sys.executable)
-        frozen_icon_path = os.path.join(base_path, icon_path)
-        if os.path.exists(frozen_icon_path):
-            app_icon = QIcon(frozen_icon_path)
-        else:
-             print(f"Figyelmeztetés: Az ikonfájl nem található a fagyasztott helyen sem: {frozen_icon_path}")
-    else:
-        print(f"Figyelmeztetés: Az ikonfájl nem található: {icon_path}")
+    app_icon = load_app_icon() # Use the utility function
 
     if not app_icon.isNull():
         qt_app.setWindowIcon(app_icon)
+    else:
+        logging.warning("main.py - Failed to load application icon using load_app_icon(), using default Qt icon.")
 
 
     # --- Ablak bezárásának kezelése ---
@@ -121,12 +114,12 @@ if __name__ == "__main__":
     main_window = LEDApp_PySide(start_hidden=start_hidden_arg)
     main_window._is_auto_starting = start_hidden_arg
 
-    if not app_icon.isNull():
+    if not app_icon.isNull(): # Ensure app_icon was successfully loaded
          main_window.setWindowIcon(app_icon)
 
     # --- Automatikus csatlakozás és indítási logika ---
     if start_hidden_arg:
-        log_event("Indítás --tray argumentummal.")
+        logging.info("Indítás --tray argumentummal.")
 
         if config_manager.get_setting("auto_connect_on_startup"):
             async def delayed_autoconnect():
@@ -136,11 +129,11 @@ if __name__ == "__main__":
             # Az asyncio task futtatása az AsyncHelperen keresztül
             main_window.async_helper.run_async_task(delayed_autoconnect())
         else:
-            log_event("Automatikus csatlakozás kihagyva (beállítás szerint le van tiltva).")
+            logging.info("Automatikus csatlakozás kihagyva (beállítás szerint le van tiltva).")
             main_window._initial_connection_attempted = True # Jelöljük, hogy nem kell várni
 
     else:
-        log_event("Normál indítás.")
+        logging.info("Normál indítás.")
         main_window._initial_connection_attempted = True # Normál indításnál nincs auto-connect kísérlet
         main_window.show()
 
