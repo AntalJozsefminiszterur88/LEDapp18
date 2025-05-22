@@ -18,12 +18,14 @@ try:
     # GUI widgetek importálása az isinstance és egyéb hivatkozások miatt
     from .gui1_pyside import GUI1_Widget
     from .gui2_schedule_pyside import GUI2_Widget
+    from ..app_utils import load_app_icon # Import the new function
 except ImportError:
     # Ha nem a 'gui' mappából futtatjuk
     from main_window_base import LEDApp_BaseWindow, log_event
     from gui_manager import GuiManager
     from gui1_pyside import GUI1_Widget
     from gui2_schedule_pyside import GUI2_Widget
+    from app_utils import load_app_icon # Import the new function (fallback for direct run)
 
 class LEDApp_PySide(LEDApp_BaseWindow):
     def __init__(self, start_hidden=False, parent=None): # start_hidden paraméter hozzáadva
@@ -34,24 +36,7 @@ class LEDApp_PySide(LEDApp_BaseWindow):
 
         # ----- Rendszer Tálca Ikon Létrehozása -----
         self.tray_icon = None
-        # Ikon betöltési logika (exe mellől is próbálkozik)
-        app_icon = QApplication.instance().windowIcon() if QApplication.instance() else QIcon()
-        if app_icon.isNull():
-            icon_path = "led_icon.ico"
-            if os.path.exists(icon_path):
-                app_icon = QIcon(icon_path)
-                log_event(f"Alkalmazás ikont '{icon_path}'-ból töltöttük be.")
-            elif getattr(sys, 'frozen', False):
-                 base_path = os.path.dirname(sys.executable)
-                 frozen_icon_path = os.path.join(base_path, icon_path)
-                 if os.path.exists(frozen_icon_path):
-                     app_icon = QIcon(frozen_icon_path)
-                     log_event(f"Alkalmazás ikont a fagyasztott helyről '{frozen_icon_path}'-ból töltöttük be.")
-                 else:
-                      log_event(f"Figyelmeztetés: Az ikonfájl ('{icon_path}') nem található sem relatívan, sem a fagyasztott helyen.")
-            else:
-                 log_event(f"Figyelmeztetés: Az ikonfájl ('{icon_path}') nem található.")
-
+        app_icon = load_app_icon() # Use the utility function
 
         if not app_icon.isNull():
             self.tray_icon = QSystemTrayIcon(app_icon, self)
@@ -71,15 +56,15 @@ class LEDApp_PySide(LEDApp_BaseWindow):
 
             self.tray_icon.setContextMenu(tray_menu)
             self.tray_icon.activated.connect(self.handle_tray_activation)
-            log_event("Rendszer tálca ikon sikeresen létrehozva.")
+            # log_event("Rendszer tálca ikon sikeresen létrehozva.") # Logging is now in load_app_icon or not needed
             # Ha rejtve kell indulni, akkor most jelenítsük meg a tálca ikont
             if self._start_hidden:
                 self.tray_icon.show()
-                log_event("Alkalmazás rejtve indul, tálca ikon megjelenítve.")
+                log_event("Alkalmazás rejtve indul, tálca ikon megjelenítve.") # This log is specific to start_hidden
         else:
-            log_event("Figyelmeztetés: Tálca ikon nem hozható létre, ikon nem elérhető.")
+            # log_event("Figyelmeztetés: Tálca ikon nem hozható létre, ikon nem elérhető.") # Logging is now in load_app_icon
             if self._start_hidden:
-                 log_event("HIBA: Rejtett indítás kérése tálca ikon nélkül nem lehetséges!")
+                 log_event("HIBA: Rejtett indítás kérése tálca ikon nélkül nem lehetséges! Az ikon betöltése nem sikerült.")
                  self._start_hidden = False # Nem tud rejtve indulni ikon nélkül
         # ----- Rendszer Tálca Ikon Vége -----
 
