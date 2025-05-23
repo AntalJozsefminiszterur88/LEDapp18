@@ -11,21 +11,12 @@ from PySide6.QtCore import Qt, Slot, QTimer, QMetaObject, Q_ARG # QMetaObject é
 from PySide6.QtGui import QIcon, QAction
 
 # Importáljuk az alap ablak osztályt és a GUI managert
-try:
-    # Próbáljuk meg relatívan importálni
-    from .main_window_base import LEDApp_BaseWindow, log_event
-    from .gui_manager import GuiManager # GuiManager importálása
-    # GUI widgetek importálása az isinstance és egyéb hivatkozások miatt
-    from .gui1_pyside import GUI1_Widget
-    from .gui2_schedule_pyside import GUI2_Widget
-    from ..app_utils import load_app_icon # Import the new function
-except ImportError:
-    # Ha nem a 'gui' mappából futtatjuk
-    from main_window_base import LEDApp_BaseWindow, log_event
-    from gui_manager import GuiManager
-    from gui1_pyside import GUI1_Widget
-    from gui2_schedule_pyside import GUI2_Widget
-    from app_utils import load_app_icon # Import the new function (fallback for direct run)
+from .main_window_base import LEDApp_BaseWindow, log_event
+from .gui_manager import GuiManager # GuiManager importálása
+# GUI widgetek importálása az isinstance és egyéb hivatkozások miatt
+from .gui1_pyside import GUI1_Widget
+from .gui2_schedule_pyside import GUI2_Widget
+from app_utils import load_app_icon # Import the new function
 
 class LEDApp_PySide(LEDApp_BaseWindow):
     def __init__(self, start_hidden=False, parent=None): # start_hidden paraméter hozzáadva
