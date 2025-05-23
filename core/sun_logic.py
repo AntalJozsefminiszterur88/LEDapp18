@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from core.location_utils import get_coordinates, get_sun_times
 
 # Hungarian day names list (Monday=0, Sunday=6)
-DAYS_HU_LIST = [
+DAYS_HU = [
     'Hétfő',     # Monday
     'Kedd',      # Tuesday
     'Szerda',    # Wednesday
@@ -27,6 +27,6 @@ def get_hungarian_day_name():
     """Returns the current day's name in Hungarian."""
     day_index = datetime.now().weekday() # Monday is 0 and Sunday is 6
     # Basic safety check, though weekday() should always return 0-6
-    if 0 <= day_index < len(DAYS_HU_LIST):
-        return DAYS_HU_LIST[day_index]
+    if 0 <= day_index < len(DAYS_HU):
+        return DAYS_HU[day_index]
     return "Ismeretlen nap" # Fallback for unexpected index
