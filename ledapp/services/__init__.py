@@ -14,6 +14,12 @@ from .schedule_service import (
     get_active_color,
     DEFAULT_SCHEDULE,
 )
+from .reconnect_service import (
+    log_event,
+    rescan_and_find_device,
+    check_and_apply_schedule,
+    start_ble_connection_loop,
+)
 
 __all__ = [
     "BLEService",
@@ -26,4 +32,8 @@ __all__ = [
     "save_schedule",
     "get_active_color",
     "DEFAULT_SCHEDULE",
+    "log_event",
+    "rescan_and_find_device",
+    "check_and_apply_schedule",
+    "start_ble_connection_loop",
 ]
