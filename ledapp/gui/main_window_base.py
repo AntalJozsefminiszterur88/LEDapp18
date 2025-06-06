@@ -21,26 +21,26 @@ from PySide6.QtGui import QIcon, QColor, QPalette, QFont
 # Importáljuk a szükséges konfigurációs és backend elemeket
 try:
     from ..config import COLORS, DAYS, CONFIG_FILE
-    from ..core.ble_controller import BLEController
-    from ..core.reconnect_handler import log_event # Logolás
-    from .async_helper import AsyncHelper
+    from ..services.ble_service import BLEService
+    from ..core.reconnect_handler import log_event  # Logolás
+    from ..util.async_helper import AsyncHelper
     from .gui_manager import GuiManager
     # GUI Widget importok itt is kellenek az isinstance miatt
     from .gui1_pyside import GUI1_Widget
     from .gui2_schedule_pyside import GUI2_Widget
     # Új import a config kezelőhöz
-    from ..core import config_manager
+    from ..services import config_service
 except ImportError as e:
     print(f"Hiba az importálás során main_window_base.py-ben: {e}")
     # Dummy log_event, ha a core import nem sikerül
     def log_event(msg): print(f"[LOG - Dummy BaseWindow]: {msg}")
-    # Dummy config_manager, ha a core import nem sikerül
-    class DummyConfigManager:
+    # Dummy config_service, ha a core import nem sikerül
+    class DummyConfigService:
         @staticmethod
         def get_setting(key): return None
         @staticmethod
         def set_setting(key, value): pass
-    config_manager = DummyConfigManager
+    config_service = DummyConfigService
     # Itt kiléphetnénk, vagy dummy osztályokat definiálhatnánk,
     # de a biztonság kedvéért most csak logolunk és megyünk tovább
     # sys.exit(1) # Kilépés hiba esetén
@@ -93,9 +93,9 @@ class LEDApp_BaseWindow(QMainWindow):
         self.devices = [] # Kezdetben üres lista
         # Kezdeti érték betöltése a configból
         self.selected_device = (
-            config_manager.get_setting("last_device_name"),
-            config_manager.get_setting("last_device_address")
-        ) if config_manager.get_setting("last_device_address") else None
+            config_service.get_setting("last_device_name"),
+            config_service.get_setting("last_device_address")
+        ) if config_service.get_setting("last_device_address") else None
         self.connected = False # Induláskor sosem csatlakozunk még
         self.last_color_hex = COLORS[0][2] if COLORS else None
         self.is_led_on = True
@@ -105,10 +105,19 @@ class LEDApp_BaseWindow(QMainWindow):
         self.sunset = None
         self.connection_status = "disconnected"
         self._current_gui_widget = None # Ezt a GuiManager is látja/módosítja
-        self.schedule = {day: {"color": "", "on_time": "", "off_time": "",
-                               "sunrise": False, "sunrise_offset": 0,
-                               "sunset": False, "sunset_offset": 0} for day in DAYS}
-        self.ble = BLEController()
+        self.schedule = {
+            day: {
+                "color": "",
+                "on_time": "",
+                "off_time": "",
+                "sunrise": False,
+                "sunrise_offset": 0,
+                "sunset": False,
+                "sunset_offset": 0,
+            }
+            for day in DAYS
+        }
+        self.ble = BLEService()
         self._is_auto_starting = False # Új flag az automatikus indulás jelzésére
         self._initial_connection_attempted = False # Új flag
 
@@ -143,8 +152,8 @@ class LEDApp_BaseWindow(QMainWindow):
         self.selected_device = None # Kiválasztott eszköz törlése
         self.devices = [] # Eszközlista törlése
         # Utolsó eszköz törlése a konfigurációból is
-        config_manager.set_setting("last_device_address", None)
-        config_manager.set_setting("last_device_name", None)
+        config_service.set_setting("last_device_address", None)
+        config_service.set_setting("last_device_name", None)
 
         self.update_connection_status_gui("disconnected") # GUI azonnali frissítése
 
@@ -248,8 +257,8 @@ class LEDApp_BaseWindow(QMainWindow):
             self.connected = True
             # *** Sikeres csatlakozáskor mentsük az eszközt ***
             if self.selected_device:
-                config_manager.set_setting("last_device_address", self.selected_device[1])
-                config_manager.set_setting("last_device_name", self.selected_device[0])
+                config_service.set_setting("last_device_address", self.selected_device[1])
+                config_service.set_setting("last_device_name", self.selected_device[0])
                 log_event(f"Utolsó eszköz elmentve: {self.selected_device[0]} ({self.selected_device[1]})")
             else:
                  log_event("Figyelmeztetés: Sikeres csatlakozás, de self.selected_device üres.")
