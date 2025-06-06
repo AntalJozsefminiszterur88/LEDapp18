@@ -6,3 +6,9 @@ from .config_service import (
     CURRENT_SETTINGS,
     DEFAULT_SETTINGS,
 )
+from .schedule_service import (
+    load_schedule,
+    save_schedule,
+    get_active_color,
+    DEFAULT_SCHEDULE,
+)
