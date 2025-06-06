@@ -11,7 +11,7 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QMetaObject, Qt, Q_ARG
 
 from ..app_utils import load_app_icon
-from ..gui.main_window_pyside import LEDApp_PySide
+from ..ui.main_window_pyside import LEDApp_PySide
 from ..services import config_service
 
 

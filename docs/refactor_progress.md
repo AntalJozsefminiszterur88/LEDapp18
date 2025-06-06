@@ -9,6 +9,11 @@ This document tracks the ongoing migration to the proposed modular package layou
 - Adjusted relative imports inside the new module.
 - Existing entry point `ledapp/main.py` continues to work.
 
+## Step 2: move BLE logic and rename UI package
+
+- Moved `ledapp/services/ble_service.py` to `ledapp/ble/service.py`.
+- Added `ledapp/ble/__init__.py` exposing `BLEService`.
+- Renamed `ledapp/gui` to `ledapp/ui` and updated imports.
+
 Next steps:
-- Move BLE logic under `ledapp/ble/`.
-- Rename `gui/` to `ui/` and adjust imports.
+- Extract configuration module into `ledapp/config/` package.

@@ -12,10 +12,10 @@ from bleak import BleakClient, BleakScanner, BleakError, BLEDevice
 try:
     from ..config import COLORS, DAYS, CHARACTERISTIC_UUID
     try:
-        from ..gui.gui2_schedule_logic import LOCAL_TZ
+        from ..ui.gui2_schedule_logic import LOCAL_TZ
     except ImportError:
         try:
-            from ..gui.gui2_schedule_logic import LOCAL_TZ
+            from ..ui.gui2_schedule_logic import LOCAL_TZ
         except ImportError:
             print("Figyelmeztetés: LOCAL_TZ import sikertelen, UTC használata a handlerben.")
             LOCAL_TZ = pytz.utc

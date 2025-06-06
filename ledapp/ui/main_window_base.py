@@ -21,7 +21,7 @@ from PySide6.QtGui import QIcon, QColor, QPalette, QFont
 # Importáljuk a szükséges konfigurációs és backend elemeket
 try:
     from ..config import COLORS, DAYS, CONFIG_FILE
-    from ..services.ble_service import BLEService
+    from ..ble.service import BLEService
     from ..core.reconnect_handler import log_event  # Logolás
     from ..util.async_helper import AsyncHelper
     from .gui_manager import GuiManager
