@@ -7,10 +7,10 @@ import traceback
 
 # Logolás (ha a reconnect_handler elérhető)
 try:
-    # Próbáljuk meg relatívan importálni
-    from .reconnect_handler import log_event
-except ImportError:
-    # Vagy abszolútan, ha a core mappán kívülről hívják
+    # Importáljuk relatívan a core modulból
+    from ..core.reconnect_handler import log_event
+except Exception:
+    # Vagy abszolútan, ha a modul csomagon kívülről hívják
     try:
         from ledapp.core.reconnect_handler import log_event
     except ImportError:
@@ -34,7 +34,7 @@ def _get_settings_path():
         app_path = os.path.dirname(sys.executable)
     else:
         # Normál futtatás esetén a projekt gyökérkönyvtárát keressük meg
-        # Feltételezzük, hogy ez a fájl a 'core' mappában van
+        # Feltételezzük, hogy ez a fájl a 'config' mappában van
         app_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(app_path, SETTINGS_FILE)
 

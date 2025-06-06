@@ -1,5 +1,5 @@
-from .ble_service import BLEService
-from .config_service import (
+from ..ble.service import BLEService
+from ..config.service import (
     load_settings,
     get_setting,
     set_setting,

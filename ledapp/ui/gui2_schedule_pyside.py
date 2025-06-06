@@ -26,7 +26,7 @@ except ImportError:
 # --- Modul Importok ---
 try:
     from ..config import COLORS, DAYS, CONFIG_FILE
-    from ..services import config_service
+    from ..config import service as config_service
     from ..core import registry_utils
     from ..core.sun_logic import get_local_sun_info, get_hungarian_day_name, DAYS_HU
     from ..core.location_utils import get_sun_times, LOCAL_TZ

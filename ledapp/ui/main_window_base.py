@@ -21,7 +21,7 @@ from PySide6.QtGui import QIcon, QColor, QPalette, QFont
 # Importáljuk a szükséges konfigurációs és backend elemeket
 try:
     from ..config import COLORS, DAYS, CONFIG_FILE
-    from ..services.ble_service import BLEService
+    from ..ble.service import BLEService
     from ..core.reconnect_handler import log_event  # Logolás
     from ..util.async_helper import AsyncHelper
     from .gui_manager import GuiManager
@@ -29,7 +29,7 @@ try:
     from .gui1_pyside import GUI1_Widget
     from .gui2_schedule_pyside import GUI2_Widget
     # Új import a config kezelőhöz
-    from ..services import config_service
+    from ..config import service as config_service
 except ImportError as e:
     print(f"Hiba az importálás során main_window_base.py-ben: {e}")
     # Dummy log_event, ha a core import nem sikerül
