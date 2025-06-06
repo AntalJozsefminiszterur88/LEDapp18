@@ -20,16 +20,16 @@ from PySide6.QtGui import QIcon, QColor, QPalette, QFont
 
 # Importáljuk a szükséges konfigurációs és backend elemeket
 try:
-    from config import COLORS, DAYS, CONFIG_FILE
-    from core.ble_controller import BLEController
-    from core.reconnect_handler import log_event # Logolás
-    from gui.async_helper import AsyncHelper
-    from gui.gui_manager import GuiManager
+    from ..config import COLORS, DAYS, CONFIG_FILE
+    from ..core.ble_controller import BLEController
+    from ..core.reconnect_handler import log_event # Logolás
+    from .async_helper import AsyncHelper
+    from .gui_manager import GuiManager
     # GUI Widget importok itt is kellenek az isinstance miatt
-    from gui.gui1_pyside import GUI1_Widget
-    from gui.gui2_schedule_pyside import GUI2_Widget
+    from .gui1_pyside import GUI1_Widget
+    from .gui2_schedule_pyside import GUI2_Widget
     # Új import a config kezelőhöz
-    from core import config_manager
+    from ..core import config_manager
 except ImportError as e:
     print(f"Hiba az importálás során main_window_base.py-ben: {e}")
     # Dummy log_event, ha a core import nem sikerül

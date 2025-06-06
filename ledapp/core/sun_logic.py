@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from core.location_utils import get_coordinates, get_sun_times
+from .location_utils import get_coordinates, get_sun_times
 
 # Hungarian day names list (Monday=0, Sunday=6)
 DAYS_HU = [

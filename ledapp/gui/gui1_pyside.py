@@ -11,7 +11,7 @@ from PySide6.QtGui import QFont
 
 # Logolás importálása
 try:
-    from core.reconnect_handler import log_event
+    from ..core.reconnect_handler import log_event
 except ImportError:
     def log_event(msg): print(f"[LOG - Dummy GUI1]: {msg}")
 

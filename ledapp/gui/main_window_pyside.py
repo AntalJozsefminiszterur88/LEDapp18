@@ -16,7 +16,7 @@ from .gui_manager import GuiManager # GuiManager importálása
 # GUI widgetek importálása az isinstance és egyéb hivatkozások miatt
 from .gui1_pyside import GUI1_Widget
 from .gui2_schedule_pyside import GUI2_Widget
-from app_utils import load_app_icon # Import the new function
+from ..app_utils import load_app_icon # Import the new function
 
 class LEDApp_PySide(LEDApp_BaseWindow):
     def __init__(self, start_hidden=False, parent=None): # start_hidden paraméter hozzáadva

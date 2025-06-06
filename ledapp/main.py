@@ -16,11 +16,11 @@ logging.basicConfig(
 from PySide6.QtWidgets import QApplication
 # from PySide6.QtGui import QIcon # QIcon will be imported via app_utils
 from PySide6.QtCore import QTimer, QMetaObject, Qt, Q_ARG
-from app_utils import load_app_icon # Import the new function
+from .app_utils import load_app_icon # Import the new function
 
 # Importáljuk a szükséges modulokat
-from gui.main_window_pyside import LEDApp_PySide
-from core import config_manager
+from .gui.main_window_pyside import LEDApp_PySide
+from .core import config_manager
 # (Old try-except for log_event and critical error handling removed as logging is now standard)
 
 
@@ -88,11 +88,13 @@ async def attempt_auto_connect(app_instance):
     return None # Vagy True, ha a task indítása sikeres volt, de ez félrevezető lehet.
 
 
-if __name__ == "__main__":
-    # --- Parancssori argumentumok feldolgozása ---
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--tray', action='store_true', help='Indítás rejtve a tálcára.')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # --- Qt Alkalmazás Inicializálása ---
     qt_app = QApplication(sys.argv)
@@ -139,4 +141,8 @@ if __name__ == "__main__":
 
 
     # --- Qt Eseményhurok Indítása ---
-    sys.exit(qt_app.exec())
+    return qt_app.exec()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

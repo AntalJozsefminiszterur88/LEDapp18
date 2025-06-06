@@ -14,7 +14,7 @@ from PySide6.QtCore import Qt, QMetaObject
 # Core application imports
 from .gui1_pyside import GUI1_Widget
 from .gui2_schedule_pyside import GUI2_Widget
-from core.reconnect_handler import start_ble_connection_loop
+from ..core.reconnect_handler import start_ble_connection_loop
 # (Old try-except ImportError for dummy fallbacks removed to ensure fail-fast on missing components)
 
 class GuiManager:
@@ -155,28 +155,25 @@ class GuiManager:
 
     @staticmethod
     def _run_reconnect_loop_target(app_instance, stop_event):
-         """Külön szálon futó asyncio hurok a kapcsolattartáshoz."""
-         loop = asyncio.new_event_loop()
-         asyncio.set_event_loop(loop)
-         try:
-              logging.info("Reconnect loop thread (új hurok) indítása...")
-              # Biztosítjuk, hogy a core modul elérhető legyen
-              from core.reconnect_handler import start_ble_connection_loop # Ensure this is the correct import path
-              loop.run_until_complete(start_ble_connection_loop(app_instance, stop_event))
-         except Exception as e:
-              logging.exception(f"Hiba a reconnect loop futtatása közben: {e}") # Use logging.exception
-         finally:
-              logging.info("Reconnect loop thread befejeződött.")
-              # Cleanup az asyncio hurokhoz
-              if loop.is_running():
-                    try:
-                         if sys.version_info >= (3, 7):
-                             loop.run_until_complete(loop.shutdown_asyncgens())
-                         loop.call_soon_threadsafe(loop.stop)
-                         # Adunk egy kis időt a leállásra, mielőtt bezárnánk
-                         time.sleep(0.1)
-                    except RuntimeError as e:
-                         logging.error(f"RuntimeError during reconnect loop stop: {e}")
-              if not loop.is_closed():
-                  loop.close()
-                  logging.info("Asyncio event loop closed in reconnect thread.")
+        """Külön szálon futó asyncio hurok a kapcsolattartáshoz."""
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            logging.info("Reconnect loop thread (új hurok) indítása...")
+            from ..core.reconnect_handler import start_ble_connection_loop
+            loop.run_until_complete(start_ble_connection_loop(app_instance, stop_event))
+        except Exception as e:
+            logging.exception(f"Hiba a reconnect loop futtatása közben: {e}")
+        finally:
+            logging.info("Reconnect loop thread befejeződött.")
+            if loop.is_running():
+                try:
+                    if sys.version_info >= (3, 7):
+                        loop.run_until_complete(loop.shutdown_asyncgens())
+                    loop.call_soon_threadsafe(loop.stop)
+                    time.sleep(0.1)
+                except RuntimeError as e:
+                    logging.error(f"RuntimeError during reconnect loop stop: {e}")
+            if not loop.is_closed():
+                loop.close()
+                logging.info("Asyncio event loop closed in reconnect thread.")

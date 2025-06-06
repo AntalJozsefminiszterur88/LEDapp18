@@ -10,9 +10,9 @@ from PySide6.QtWidgets import QMessageBox
 from PySide6.QtCore import Qt
 
 # Importáljuk a szükséges konfigurációs és backend/core elemeket
-from config import COLORS, DAYS, CONFIG_FILE
-from core.sun_logic import get_local_sun_info, get_hungarian_day_name, DAYS_HU
-from core.location_utils import get_sun_times # Bár itt nincs közvetlen hívás, a main_app tartalmazza
+from ..config import COLORS, DAYS, CONFIG_FILE
+from ..core.sun_logic import get_local_sun_info, get_hungarian_day_name, DAYS_HU
+from ..core.location_utils import get_sun_times  # Bár itt nincs közvetlen hívás, a main_app tartalmazza
 
 # --- Időzóna Definíció ---
 # Biztosítjuk, hogy a LOCAL_TZ létezzen

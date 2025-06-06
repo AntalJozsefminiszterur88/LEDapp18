@@ -6,11 +6,11 @@ from PySide6.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QG
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtGui import QFont, QPalette, QColor
 
-from config import COLORS # Importáljuk a színeket
+from ..config import COLORS  # Importáljuk a színeket
 
 # Logolás importálása, ha kell
 try:
-    from core.reconnect_handler import log_event
+    from ..core.reconnect_handler import log_event
 except ImportError:
     # Dummy logger
     def log_event(msg): print(f"[LOG - Dummy GUI2Controls]: {msg}")
