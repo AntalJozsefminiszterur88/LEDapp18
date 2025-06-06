@@ -10,9 +10,9 @@ import sys
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QMetaObject, Qt, Q_ARG
 
-from .app_utils import load_app_icon
-from .gui.main_window_pyside import LEDApp_PySide
-from .services import config_service
+from ..app_utils import load_app_icon
+from ..gui.main_window_pyside import LEDApp_PySide
+from ..services import config_service
 
 
 async def attempt_auto_connect(app_instance: LEDApp_PySide):
