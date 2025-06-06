@@ -9,15 +9,11 @@ from PySide6.QtCore import QMetaObject, Qt, Q_ARG, Signal
 
 # Logolás importálása
 try:
-    from core.reconnect_handler import log_event
+    from ..core.reconnect_handler import log_event
 except ImportError:
-    try:
-        from ..core.reconnect_handler import log_event
-    except ImportError:
-        print("HIBA: Nem sikerült importálni a log_eventet az async_helper.py-ban.")
-        # Definiáljunk egy dummy loggert, hogy ne álljon le a program
-        def log_event(msg):
-            print(f"[LOG - Dummy AsyncHelper]: {msg}")
+    print("HIBA: Nem sikerült importálni a log_eventet az async_helper.py-ban.")
+    def log_event(msg):
+        print(f"[LOG - Dummy AsyncHelper]: {msg}")
 
 class AsyncHelper:
     """Segédosztály az aszinkron műveletek kezelésére."""

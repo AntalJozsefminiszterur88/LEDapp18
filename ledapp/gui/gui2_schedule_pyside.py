@@ -18,20 +18,20 @@ from PySide6.QtGui import QFont, QColor
 
 # --- Logolás ---
 try:
-    from core.reconnect_handler import log_event
+    from ..core.reconnect_handler import log_event
 except ImportError:
     def log_event(msg): print(f"[LOG - Dummy GUI2Schedule]: {msg}")
     log_event("Figyelmeztetés: core.reconnect_handler.log_event import sikertelen.")
 
 # --- Modul Importok ---
 try:
-    from config import COLORS, DAYS, CONFIG_FILE
-    import core.config_manager as config_manager
-    import core.registry_utils as registry_utils
-    from core.sun_logic import get_local_sun_info, get_hungarian_day_name, DAYS_HU
-    from core.location_utils import get_sun_times, LOCAL_TZ
-    from gui import gui2_schedule_logic as logic
-    from gui.gui2_controls_pyside import GUI2_ControlsWidget
+    from ..config import COLORS, DAYS, CONFIG_FILE
+    from ..core import config_manager
+    from ..core import registry_utils
+    from ..core.sun_logic import get_local_sun_info, get_hungarian_day_name, DAYS_HU
+    from ..core.location_utils import get_sun_times, LOCAL_TZ
+    from . import gui2_schedule_logic as logic
+    from .gui2_controls_pyside import GUI2_ControlsWidget
     logic.LOCAL_TZ = LOCAL_TZ
     log_event("GUI2Schedule: Szükséges modulok sikeresen importálva.")
 

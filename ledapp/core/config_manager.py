@@ -12,7 +12,7 @@ try:
 except ImportError:
     # Vagy abszolútan, ha a core mappán kívülről hívják
     try:
-        from core.reconnect_handler import log_event
+        from ledapp.core.reconnect_handler import log_event
     except ImportError:
         # Dummy logger végső esetben
         def log_event(msg):

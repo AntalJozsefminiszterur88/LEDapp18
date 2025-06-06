@@ -3,7 +3,7 @@
 import asyncio
 import logging # Import the logging module
 from bleak import BleakClient, BleakScanner, BleakError
-from config import CHARACTERISTIC_UUID
+from ..config import CHARACTERISTIC_UUID
 # import traceback # No longer needed for logging exceptions
 
 # Logolás importálása - Removed, using standard logging

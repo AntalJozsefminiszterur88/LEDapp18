@@ -10,16 +10,16 @@ from bleak import BleakClient, BleakScanner, BleakError, BLEDevice
 
 # Szükséges importok
 try:
-    from config import COLORS, DAYS, CHARACTERISTIC_UUID
+    from ..config import COLORS, DAYS, CHARACTERISTIC_UUID
     try:
-        from gui.gui2_schedule_logic import LOCAL_TZ
+        from ..gui.gui2_schedule_logic import LOCAL_TZ
     except ImportError:
         try:
             from ..gui.gui2_schedule_logic import LOCAL_TZ
         except ImportError:
             print("Figyelmeztetés: LOCAL_TZ import sikertelen, UTC használata a handlerben.")
             LOCAL_TZ = pytz.utc
-    from core.sun_logic import DAYS_HU
+    from .sun_logic import DAYS_HU
 except ImportError as e:
     print(f"HIBA: Nem sikerült importálni a szükséges config/logic elemeket a reconnect_handler.py-ban: {e}")
     COLORS, DAYS, DAYS_HU = [], [], {}
