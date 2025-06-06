@@ -26,7 +26,7 @@ except ImportError:
 # --- Modul Importok ---
 try:
     from ..config import COLORS, DAYS, CONFIG_FILE
-    from ..core import config_manager
+    from ..services import config_service
     from ..core import registry_utils
     from ..core.sun_logic import get_local_sun_info, get_hungarian_day_name, DAYS_HU
     from ..core.location_utils import get_sun_times, LOCAL_TZ
@@ -38,13 +38,13 @@ try:
 except ImportError as e:
     log_event(f"KRITIKUS HIBA: Nem sikerült importálni a szükséges modulokat gui2_schedule_pyside.py-ban: {e}")
     traceback.print_exc()
-    class DummyManager:
+    class DummyService:
         DEFAULT_SETTINGS = {
             "start_with_windows": False, "last_device_address": None,
             "last_device_name": None, "auto_connect_on_startup": True,
         }
         @staticmethod
-        def get_setting(key): return DummyManager.DEFAULT_SETTINGS.get(key)
+        def get_setting(key): return DummyService.DEFAULT_SETTINGS.get(key)
         @staticmethod
         def set_setting(key, value): pass
         @staticmethod
@@ -53,8 +53,8 @@ except ImportError as e:
         def add_to_startup(): pass
         @staticmethod
         def remove_from_startup(): pass
-    if 'config_manager' not in globals(): config_manager = DummyManager
-    if 'registry_utils' not in globals(): registry_utils = DummyManager
+    if 'config_service' not in globals(): config_service = DummyService
+    if 'registry_utils' not in globals(): registry_utils = DummyService
     if 'logic' not in globals():
         class DummyLogic:
             LOCAL_TZ = pytz.utc
@@ -172,9 +172,9 @@ class GUI2_Widget(QWidget):
         schedule_action_layout = QHBoxLayout()
         schedule_action_layout.setContentsMargins(10,0,10,0)
         self.startup_checkbox = QCheckBox("Indítás a Windows-zal")
-        if not isinstance(config_manager, type) or config_manager.__name__ != 'DummyManager':
+        if not isinstance(config_service, type) or config_service.__name__ != 'DummyService':
             try:
-                self.startup_checkbox.setChecked(config_manager.get_setting("start_with_windows"))
+                self.startup_checkbox.setChecked(config_service.get_setting("start_with_windows"))
                 self.startup_checkbox.stateChanged.connect(self.toggle_startup)
             except Exception as e_cfg:
                  log_event(f"Hiba a startup checkbox beállításakor: {e_cfg}")
@@ -239,8 +239,8 @@ class GUI2_Widget(QWidget):
     def toggle_startup(self, state):
         is_checked = bool(state == Qt.CheckState.Checked.value)
         log_event(f"'Indítás a Windows-zal' checkbox {'bekapcsolva' if is_checked else 'kikapcsolva'}.")
-        is_dummy_cfg = isinstance(config_manager, type) and config_manager.__name__ == 'DummyManager'
-        is_dummy_reg = isinstance(registry_utils, type) and registry_utils.__name__ == 'DummyManager'
+        is_dummy_cfg = isinstance(config_service, type) and config_service.__name__ == 'DummyService'
+        is_dummy_reg = isinstance(registry_utils, type) and registry_utils.__name__ == 'DummyService'
         if is_dummy_cfg or is_dummy_reg:
              log_event("HIBA: Nem lehet módosítani az indítási beállításokat, mert a config/registry manager nem töltődött be helyesen.")
              QMessageBox.critical(self, "Import Hiba", "Nem sikerült betölteni a beállításkezelő modulokat. Az indítási beállítás nem módosítható.")
@@ -248,7 +248,7 @@ class GUI2_Widget(QWidget):
              self.startup_checkbox.setChecked(not is_checked)
              self.startup_checkbox.blockSignals(False)
              return
-        config_manager.set_setting("start_with_windows", is_checked)
+        config_service.set_setting("start_with_windows", is_checked)
         success = False
         if is_checked:
             success = registry_utils.add_to_startup()
@@ -263,7 +263,7 @@ class GUI2_Widget(QWidget):
              self.startup_checkbox.blockSignals(True)
              self.startup_checkbox.setChecked(not is_checked)
              self.startup_checkbox.blockSignals(False)
-             config_manager.set_setting("start_with_windows", not is_checked)
+             config_service.set_setting("start_with_windows", not is_checked)
 
 
     # <<<--- ITT VAN A MÓDOSÍTOTT LOGIKA --->>>
